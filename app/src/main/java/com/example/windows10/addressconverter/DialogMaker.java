@@ -12,6 +12,7 @@ import android.view.View;
  */
 
 public class DialogMaker extends DialogFragment {
+
     public interface Callback{
         void callbackMethod();
     }

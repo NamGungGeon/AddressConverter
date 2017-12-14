@@ -5,6 +5,7 @@
     android:background="@color/colorPrimary"
     android:padding="25dp">
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -47,8 +48,9 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/loadNameCheck"
                             android:textColorHint="#FFFFFF"
+                            android:layout_marginLeft="20dp"
                             android:buttonTint="#FFFFFF"
-                            android:hint="도로명 주소로 검색"
+                            android:hint="도로명 주소로 검색 \n(또는 지번 주소 직접입력)"
                             android:checked="true"/>
                     </RadioGroup>
                     <FrameLayout
@@ -120,6 +122,13 @@
                                     android:id="@+id/dongSelfInput"
                                     android:visibility="gone"/>
                             </LinearLayout>
+                            <TextView
+                                android:layout_marginTop="20dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textColor="#FFFFFF"
+                                android:text="찾으려는 지번주소가 없거나 지번주소를 직접 입력하려면\n위의 도로명 주소로 검색 메뉴를 이용하세요"/>
                         </LinearLayout>
                     </FrameLayout>
                     <FrameLayout
@@ -135,19 +144,27 @@
                             android:textColor="#FFFFFF"
                             android:textColorHint="#BBBBBB"
                             android:layout_marginBottom="15dp"/>
+
+                        <TextView
+                            android:layout_marginTop="65dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textColor="#FFFFFF"
+                            android:text="지번주소를 입력해도 정상적으로 코드가 반환됩니다."/>
                     </FrameLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <Button
-                            android:layout_marginTop="20dp"
-                            android:layout_width="60dp"
-                            android:layout_height="wrap_content"
-                            android:text="변환"
-                            android:textColor="#FFFFFF"
-                            android:background="@color/blueButtonColor"
+                            android:id="@+id/convertToCode"
+                            android:layout_width="80dp"
+                            android:layout_height="50dp"
                             android:layout_alignParentRight="true"
-                            android:id="@+id/convertToCode"/>
+                            android:layout_marginTop="30dp"
+                            android:background="@color/blueButtonColor"
+                            android:text="변환"
+                            android:textColor="#FFFFFF" />
                     </RelativeLayout>
                 </LinearLayout>
             </RelativeLayout>

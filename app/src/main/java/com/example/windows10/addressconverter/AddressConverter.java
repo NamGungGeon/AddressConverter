@@ -1,6 +1,14 @@
 package com.example.windows10.addressconverter;
 
+import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,7 +31,6 @@ public class AddressConverter implements Runnable{
         if(instance==null){
             instance= new AddressConverter();
         }
-
         return instance;
     }
 
@@ -37,13 +44,19 @@ public class AddressConverter implements Runnable{
     private String liNm="";
 
     private AddressSaver result=null;
-    public AddressSaver convertToJibeonjuso(String input) throws Exception{
+    private Context context= null;
+    private LayoutInflater inflater= null;
+    private FragmentManager fragmentManager= null;
+    public AddressSaver convertToJibeonjuso(String input, Context context, LayoutInflater inflater, FragmentManager fragmentManage) throws Exception{
         //initiating...
         init();
+        this.context= context;
+        this.inflater= inflater;
+        this.fragmentManager= fragmentManage;
 
         // 요청변수 설정
         String currentPage = "1";
-        String countPerPage = "5";
+        String countPerPage = "30";
         String confmKey = certificateKey;
         String keyword = input;
 
@@ -51,7 +64,9 @@ public class AddressConverter implements Runnable{
         //http://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=5&keyword=%EC%B6%A9%EC%B2%AD%EB%82%A8%EB%8F%84%20%EB%8B%B9%EC%A7%84%EC%8B%9C%20%EC%84%9D%EB%AC%B8%EB%A9%B4%20%EB%82%9C%EC%A7%80%EB%8F%84%EB%A6%AC&confmKey=U01TX0FVVEgyMDE3MDkxNDIyMjE1NzEwNzM1Mzc=
         apiUrl = "http://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage="+currentPage+"&countPerPage="+countPerPage+"&keyword="+ URLEncoder.encode(keyword,"UTF-8")+"&confmKey="+confmKey;
 
+
         startConnection();
+
         return result;
     }
 
@@ -90,7 +105,7 @@ public class AddressConverter implements Runnable{
                     if(address.emdNm.equals("고덕동") || address.emdNm.equals("성내동")){
                         result="2G51-2";
                     }else if(address.emdNm.equals("길동")){
-                        result="2G35-2";
+                        result="2G53-2";
                     }else if(address.emdNm.equals("암사동") || address.emdNm.equals("천호동")){
                         result="2G51-1";
                     }else{
@@ -259,7 +274,7 @@ public class AddressConverter implements Runnable{
                         result="1A10-1";
                     }else if(address.emdNm.equals("문정동")){
                         result="1A10-3";
-                    }else if(address.emdNm.equals("삼천동") || address.emdNm.equals("석촌동") || address.emdNm.equals("신천동")
+                    }else if(address.emdNm.equals("삼전동") || address.emdNm.equals("석촌동") || address.emdNm.equals("신천동")
                             || address.emdNm.equals("잠실동") || address.emdNm.equals("잠실본동") || address.emdNm.equals("풍납동")){
                         result="1G10-0";
                     }else if(address.emdNm.equals("장지동")){
@@ -335,7 +350,7 @@ public class AddressConverter implements Runnable{
                             || address.emdNm.equals("송현동") || address.emdNm.equals("수송동") || address.emdNm.equals("안국동")
                             || address.emdNm.equals("연건동") || address.emdNm.equals("연지동") || address.emdNm.equals("예지동")
                             || address.emdNm.equals("운니동") || address.emdNm.equals("원남동") || address.emdNm.equals("원서동")
-                            || address.emdNm.equals("인사동") || address.emdNm.equals("안의동") || address.emdNm.equals("장사동")
+                            || address.emdNm.equals("인사동") || address.emdNm.equals("인의동") || address.emdNm.equals("장사동")
                             || address.emdNm.equals("재동") || address.emdNm.equals("종로1가") || address.emdNm.equals("종로2가")
                             || address.emdNm.equals("종로3가") || address.emdNm.equals("종로4가") || address.emdNm.equals("종로5가")
                             || address.emdNm.equals("중학동")){
@@ -383,7 +398,7 @@ public class AddressConverter implements Runnable{
                 if(address.sggNm.equals("가평군")){
                     result= "9B77-0";
                 }else if(address.sggNm.equals("고양시 덕양구")){
-                    if(address.emdNm.equals("내곡동") || address.emdNm.equals("대창동")){
+                    if(address.emdNm.equals("내곡동") || address.emdNm.equals("대장동")){
                         result= "3T92-3";
                     }else if(address.emdNm.equals("성사동")){
                         result= "3T92-2";
@@ -465,17 +480,8 @@ public class AddressConverter implements Runnable{
                     }
                 }else if(address.sggNm.equals("동두천시")){
                     result= "2G62-2";
-                }else if(address.sggNm.equals("부천시 소사구")){
-                    if(address.emdNm.equals("괴안동") || address.emdNm.equals("범박동")){
-                        result= "3T02-1";
-                    }else if(address.emdNm.equals("옥길동")){
-                        result= "3T02-2";
-                    }else{
-                        result= "3T02-4";
-                    }
-                }else if(address.sggNm.equals("부천시 오정구")){
-                    result= "3S56-0";
-                }else if(address.sggNm.equals("부천시 원미구")){
+                }else if(address.sggNm.contains("부천시")){
+                    //구 원미구
                     if(address.emdNm.equals("도당동")){
                         result= "3T98-4";
                     }else if(address.emdNm.equals("상동")){
@@ -490,6 +496,20 @@ public class AddressConverter implements Runnable{
                         result= "3T97-3";
                     }else if(address.emdNm.equals("춘의동")){
                         result= "3T98-5";
+                    }
+                    //구 오정구
+                    else if(address.emdNm.contains("성곡") || address.emdNm.contains("원종")
+                            || address.emdNm.contains("고강")
+                            || address.emdNm.contains("오정") || address.emdNm.contains("신흥")){
+                        result= "3S56-0";
+                    }
+                    //구 소사구
+                    else if(address.emdNm.equals("괴안동") || address.emdNm.equals("범박동")){
+                        result= "3T02-1";
+                    }else if(address.emdNm.equals("옥길동")){
+                        result= "3T02-2";
+                    }else{
+                        result= "3T02-4";
                     }
                 }else if(address.sggNm.equals("성남시 분당구")){
                     if(address.emdNm.equals("분당동") || address.emdNm.equals("서현동")){
@@ -559,7 +579,7 @@ public class AddressConverter implements Runnable{
                     }
                 }else if(address.sggNm.equals("안산시 단원구")){
                     result= "4D41-0";
-                }else if(address.sggNm.equals("안산시 상륙구")){
+                }else if(address.sggNm.equals("안산시 상록구")){
                     if(address.emdNm.equals("건건동") || address.emdNm.equals("본오동") || address.emdNm.equals("사사동")
                             || address.emdNm.equals("사동") || address.emdNm.equals("팔곡이동") || address.emdNm.equals("팔곡일동")){
                         result= "4D49-1";
@@ -705,7 +725,7 @@ public class AddressConverter implements Runnable{
                         result= "1C03-0";
                     }else if(address.emdNm.equals("진안동")){
                         result= "2R01-0";
-                    }else if(address.emdNm.equals("창계동") || address.emdNm.equals("황계동")){
+                    }else if(address.emdNm.equals("청계동") || address.emdNm.equals("황계동")){
                         result= "2R00-1";
                     }else{
                         result= "1A15-0";
@@ -756,7 +776,7 @@ public class AddressConverter implements Runnable{
                     if(address.emdNm.equals("귀래면")||address.emdNm.equals("문막읍")||address.emdNm.equals("반곡동")||
                             address.emdNm.equals("부론면")||address.emdNm.equals("우산동")||address.emdNm.equals("인동")||
                             address.emdNm.equals("지정동")||address.emdNm.equals("판부면")||address.emdNm.equals("행구동")||
-                            address.emdNm.equals("호저면")||address.emdNm.equals("홍업면")){
+                            address.emdNm.equals("호저면")||address.emdNm.equals("흥업면")){
                         result = "1A06-1";
                     }else{
                         result= "1A06-2";
@@ -842,7 +862,7 @@ public class AddressConverter implements Runnable{
 
                 }else if(address.sggNm.equals("서구")){
                     if(address.emdNm.equals("가정동")||address.emdNm.equals("가좌동")||address.emdNm.equals("공촌동")||
-                            address.emdNm.equals("석남동")||address.emdNm.equals("산현동")||
+                            address.emdNm.equals("석남동")||address.emdNm.equals("신현동")||
                             address.emdNm.equals("심곡동")||address.emdNm.equals("연희동")){
                         result = "4D45-0";
                     }else{
@@ -856,8 +876,8 @@ public class AddressConverter implements Runnable{
                         result = "4D52-2";
                     }
 
-                }else if(address.sggNm.equals("웅진군")){
-                    if(address.emdNm.equals("영홍면")){
+                }else if(address.sggNm.equals("옹진군")){
+                    if(address.emdNm.equals("영흥면")){
                         result = "4D41-3";
                     }else{
                         result ="4D58-3";
@@ -874,7 +894,7 @@ public class AddressConverter implements Runnable{
 
                 result+= "\n\n[도선료]";
                 result+= "\n* 강화군 삼산면, 서도면: 4500원";
-                result+= "\n* 웅진군(영흥면 제외): 6000원";
+                result+= "\n* 옹진군(영흥면 제외): 6000원";
                 result+= "\n* 중구 무의동: 6000원";
 
 
@@ -1060,6 +1080,8 @@ public class AddressConverter implements Runnable{
                     if(address.emdNm.equals("기성면") || address.emdNm.equals("온정면")
                             || address.emdNm.equals("평해읍") || address.emdNm.equals("지천면")){
                         result="9B86-0";
+                    }else{
+                        result="9K75-0";
                     }
                 }else if(address.sggNm.equals("의성군")){
                     result = "0Q57-0";
@@ -1090,7 +1112,7 @@ public class AddressConverter implements Runnable{
                     if(address.emdNm.equals("고룡동")||address.emdNm.equals("두정동")){
                         result = "7W34-1";
 
-                    }else if(address.emdNm.equals("광산동")||address.emdNm.equals("동임동")||address.emdNm.equals("사호동")){
+                    }else if(address.emdNm.equals("광산동")||address.emdNm.equals("동림동")||address.emdNm.equals("사호동")){
                         result = "7W58-3";
 
                     }else if(address.emdNm.equals("대산동")||address.emdNm.equals("도산동")||address.emdNm.equals("도천동")||
@@ -1100,7 +1122,7 @@ public class AddressConverter implements Runnable{
                     }else if(address.emdNm.equals("비아동")||address.emdNm.equals("산막동")||address.emdNm.equals("산월동")){
                         result = "7W34-1";
 
-                    }else if(address.emdNm.equals("산정동")||address.emdNm.equals("삼모동")||address.emdNm.equals("서봉동")||
+                    }else if(address.emdNm.equals("산정동")||address.emdNm.equals("삼도동")||address.emdNm.equals("서봉동")||
                             address.emdNm.equals("선암동")||address.emdNm.equals("소촌동")||address.emdNm.equals("송산동")||
                             address.emdNm.equals("송정동")||address.emdNm.equals("송학동")){
                         result = "7W58-2";
@@ -1111,7 +1133,7 @@ public class AddressConverter implements Runnable{
                     }else if(address.emdNm.equals("신동")||address.emdNm.equals("신촌동")){
                         result = "7W58-2";
 
-                    }else if(address.emdNm.equals("신릉동")||address.emdNm.equals("쌍암동")||address.emdNm.equals("안청동")){
+                    }else if(address.emdNm.equals("신룡동")||address.emdNm.equals("쌍암동")||address.emdNm.equals("안청동")){
                         result = "7W34-1";
 
                     }else if(address.emdNm.equals("신창동")||address.emdNm.equals("오산동")){
@@ -1163,7 +1185,7 @@ public class AddressConverter implements Runnable{
                     }else if(address.emdNm.equals("오치동")||address.emdNm.equals("용봉동")||address.emdNm.equals("우산동")){
                         result = "7W33-2";
 
-                    }else if(address.emdNm.equals("운암동")||address.emdNm.equals("풍항동")){
+                    }else if(address.emdNm.equals("운암동")||address.emdNm.equals("풍향동")){
                         result = "7W30-2";
 
                     }else if(address.emdNm.equals("운정동")||address.emdNm.equals("일곡동")||address.emdNm.equals("장등동")){
@@ -1465,7 +1487,7 @@ public class AddressConverter implements Runnable{
                     }else if(address.emdNm.equals("외도이동")||address.emdNm.equals("외도일동")){
                         result ="8F41-0";
 
-                    }else if(address.emdNm.equals("용감동")){
+                    }else if(address.emdNm.equals("용강동")){
                         result ="8Z20-0";
 
                     }else if(address.emdNm.equals("우도면")){
@@ -1604,7 +1626,7 @@ public class AddressConverter implements Runnable{
 
                 }else if(address.sggNm.equals("동구")){
                     if(address.emdNm.equals("가양동")||address.emdNm.equals("삼성동")||address.emdNm.equals("성남동")||
-                            address.emdNm.equals("신홍동")||address.emdNm.equals("용운동")||address.emdNm.equals("용천동")){
+                            address.emdNm.equals("신홍동")||address.emdNm.equals("용운동")||address.emdNm.equals("용전동")){
                         result = "2C30-1";
                     }else{
                         result = "2C30-2";
@@ -1683,7 +1705,7 @@ public class AddressConverter implements Runnable{
                     }else if(address.emdNm.equals("전민동")||address.emdNm.equals("화암동")){
                         result = "2N20-3";
 
-                    }else if(address.emdNm.equals("탐립동")){
+                    }else if(address.emdNm.equals("탑립동")){
                         result = "2N20-4";
 
                     }else{
@@ -1852,7 +1874,7 @@ public class AddressConverter implements Runnable{
                         result = "6J28-1";
 
                     }else if(address.emdNm.equals("대청동")||address.emdNm.equals("무계동")||address.emdNm.equals("부곡동")||address.emdNm.equals("삼문동")||
-                            address.emdNm.equals("수가동")||address.emdNm.equals("신문동")||address.emdNm.equals("유햐동")||
+                            address.emdNm.equals("수가동")||address.emdNm.equals("신문동")||address.emdNm.equals("유하동")||
                             address.emdNm.equals("율하동")||address.emdNm.equals("응달동")||address.emdNm.equals("장유동")||address.emdNm.equals("장유면")){
                         result = "6J28-2";
 
@@ -1893,7 +1915,7 @@ public class AddressConverter implements Runnable{
                     result = "9C82-0";
 
                 }else if(address.sggNm.equals("진주시")){
-                    if(address.emdNm.equals("가좌동")||address.emdNm.equals("계동")||address.emdNm.equals("동성동")||address.emdNm.equals("먕경동")||
+                    if(address.emdNm.equals("가좌동")||address.emdNm.equals("계동")||address.emdNm.equals("동성동")||address.emdNm.equals("망경동")||
                             address.emdNm.equals("명석면")||address.emdNm.equals("본성동")||address.emdNm.equals("봉곡동")||address.emdNm.equals("상봉동")||
                             address.emdNm.equals("상봉동동")||address.emdNm.equals("상봉서동")||address.emdNm.equals("상평동")||
                             address.emdNm.equals("장대동")||address.emdNm.equals("중안동")||address.emdNm.equals("집현면")||address.emdNm.equals("칠암동")||
@@ -1924,10 +1946,8 @@ public class AddressConverter implements Runnable{
                             address.emdNm.equals("사파동")||address.emdNm.equals("사파정동")||address.emdNm.equals("삼정자동")||
                             address.emdNm.equals("상남동")||address.emdNm.equals("성주동")||address.emdNm.equals("토월동")){
                         result = "5Y85-1";
-
                     }else{
                         result = "6J43-0";
-
                     }
 
                 }else if(address.sggNm.equals("창원시 의창구")){
@@ -1984,7 +2004,7 @@ public class AddressConverter implements Runnable{
                     result = "5Y90-0";
 
                 }else if(address.sggNm.equals("동구")){
-                    if(address.emdNm.equals("괴천동")||address.emdNm.equals("금강동")||address.emdNm.equals("매여동")||
+                    if(address.emdNm.equals("괴전동")||address.emdNm.equals("금강동")||address.emdNm.equals("매여동")||
                             address.emdNm.equals("방촌동")||address.emdNm.equals("상매동")||address.emdNm.equals("신서동")){
                         result = "5Y11-0";
 
@@ -2028,7 +2048,6 @@ public class AddressConverter implements Runnable{
                     }
 
                 }else if(address.sggNm.equals("수성구")){
-
                     if(address.emdNm.equals("노변동")||address.emdNm.equals("매호동")){
                         result = "5Y11-1";
 
@@ -2057,6 +2076,8 @@ public class AddressConverter implements Runnable{
                         result = "5Y11-0";
                     }
 
+                }else if(address.sggNm.equals("중구")){
+                    result="5Z10-0";
                 }
             }
 
@@ -2069,6 +2090,9 @@ public class AddressConverter implements Runnable{
 
     private void init(){
         result=null;
+        context= null;
+        inflater= null;
+        fragmentManager= null;
         entireAddress= "";
         siNm= "";
         sggNm= "";
@@ -2084,25 +2108,84 @@ public class AddressConverter implements Runnable{
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document xml = documentBuilder.parse(apiUrl);
 
-            Element root = xml.getDocumentElement();
+            final Element root = xml.getDocumentElement();
 
-            entireAddress = root.getElementsByTagName("jibunAddr").item(0).getTextContent();
-            siNm= root.getElementsByTagName("siNm").item(0).getTextContent();
-            sggNm= root.getElementsByTagName("sggNm").item(0).getTextContent();
-            emdNm= root.getElementsByTagName("emdNm").item(0).getTextContent();
-            if(root.getElementsByTagName("liNm")!=null){
-                liNm= root.getElementsByTagName("liNm").item(0).getTextContent();
-                result= new AddressSaver(entireAddress, siNm, sggNm, emdNm, liNm);
-            }else{
-                result= new AddressSaver(entireAddress, siNm, sggNm, emdNm);
+            // Request selecting address
+            final DialogMaker dialog= new DialogMaker();
+            View addressListView= inflater.inflate(R.layout.select_address, null);
+            ListView addressList= (ListView)addressListView.findViewById(R.id.addressList);
+
+            // Case: invalid Address
+            if(root.getElementsByTagName("jibunAddr").getLength()== 0){
+                final DialogMaker failToLoad= new DialogMaker();
+                DialogMaker.Callback closeDialog=new DialogMaker.Callback() {
+                    @Override
+                    public void callbackMethod() {
+                        failToLoad.dismiss();
+                    }
+                };
+                failToLoad.setValue("잘못된 주소입니다.\n다시 시도하세요.", "확인", null, closeDialog, null);
+                failToLoad.show(fragmentManager, "");
+                disConnection();
+                return;
             }
+            ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1);
+            for(int i=0; i<root.getElementsByTagName("jibunAddr").getLength(); i++){
+                arrayAdapter.add(root.getElementsByTagName("jibunAddr").item(i).getTextContent());
+            }
+            addressList.setAdapter(arrayAdapter);
+            addressList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                    entireAddress = root.getElementsByTagName("jibunAddr").item(i).getTextContent();
+                    siNm= root.getElementsByTagName("siNm").item(i).getTextContent();
+                    sggNm= root.getElementsByTagName("sggNm").item(i).getTextContent();
+                    emdNm= root.getElementsByTagName("emdNm").item(i).getTextContent();
+                    if(root.getElementsByTagName("liNm")!=null){
+                        liNm= root.getElementsByTagName("liNm").item(i).getTextContent();
+                        result= new AddressSaver(entireAddress, siNm, sggNm, emdNm, liNm);
+                    }else{
+                        result= new AddressSaver(entireAddress, siNm, sggNm, emdNm);
+                    }
 
-            disConnection();
+                    showResultDialog(result);
+                }
+            });
+            dialog.setValue("주소 선택", "", "", null, null, addressListView);
+            dialog.show(fragmentManager, "");
 
         }catch (Exception e){
             Log.i("Connection Error", e.toString());
         }
+    }
+
+    private void showResultDialog(AddressSaver addressData){
+        disConnection();
+
+
+
+        String resultCode= AddressConverter.getInstance().convertToCode(addressData);
+
+        final DialogMaker resultDialog=new DialogMaker();
+        DialogMaker.Callback closeDialog=new DialogMaker.Callback() {
+            @Override
+            public void callbackMethod() {
+                resultDialog.dismiss();
+            }
+        };
+
+        View resultLayout= inflater.inflate(R.layout.adress_info, null);
+        TextView originAddress= (TextView)resultLayout.findViewById(R.id.entireAddress);
+        TextView convertedCode= (TextView)resultLayout.findViewById(R.id.convertResult);
+
+        originAddress.setText("지번 주소: "+ addressData.entireAddress);
+        convertedCode.setText("지역 코드: "+ convertToCode(addressData));
+
+        resultDialog.setValue("결과", "닫기", null, closeDialog, null, resultLayout);
+        resultDialog.show(fragmentManager, "");
+
+
     }
 
     private Thread thread=null;

@@ -86,21 +86,7 @@ public class MainFragment extends Fragment {
                         String convertedAddress=null;
                         // When Input address is "도로명주소"
                         try {
-                            addressWrapper=AddressConverter.getInstance().convertToJibeonjuso(inputAddress.getText().toString());
-                            if(addressWrapper==null){
-                                final DialogMaker failToLoad= new DialogMaker();
-                                DialogMaker.Callback closeDialog=new DialogMaker.Callback() {
-                                    @Override
-                                    public void callbackMethod() {
-                                        failToLoad.dismiss();
-                                    }
-                                };
-                                failToLoad.setValue("잘못된 주소입니다.\n다시 시도하세요.", "확인", null, closeDialog, null);
-                                failToLoad.show(getActivity().getSupportFragmentManager(), "");
-                                break;
-                            }else{
-                                convertedAddress= addressWrapper.entireAddress;
-                            }
+                            addressWrapper=AddressConverter.getInstance().convertToJibeonjuso(inputAddress.getText().toString(), getContext(), getActivity().getLayoutInflater(), getActivity().getSupportFragmentManager());
                         } catch (Exception e) {
                             Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             final DialogMaker failToLoad= new DialogMaker();
@@ -110,12 +96,13 @@ public class MainFragment extends Fragment {
                                     failToLoad.dismiss();
                                 }
                             };
-                            failToLoad.setValue("주소를 불러오는 도중 실패하였습니다.\n다시 시도하세요.", "확인", null, closeDialog, null);
+                            failToLoad.setValue("주소를 불러오는 도중 실패하였습니다.\n다시 시도하거나 인터넷 연결을 확인하세요.", "확인", null, closeDialog, null);
                             failToLoad.show(getActivity().getSupportFragmentManager(), "");
                             break;
                         }
 
                         jibeonJuso= convertedAddress;
+                        break;
                     }
 
                     String resultCode= AddressConverter.getInstance().convertToCode(addressWrapper);
@@ -166,11 +153,11 @@ public class MainFragment extends Fragment {
                     gugun.setAdapter(adapter);
                 }else if(selectedSido.contains("경기")){
                     String elements[]= {"가평군", "고양시 덕양구", "고양시 일산동구", "고양시 일산서구", "과천시", "광명시"
-                    , "광주시", "구리시", "군포시", "김포시", "남양주시", "동두천시", "부천시 오정구", "부천시 원미구"
+                    , "광주시", "구리시", "군포시", "김포시", "남양주시", "동두천시", "부천시 소사구","부천시 오정구", "부천시 원미구"
                     , "성남시 분당구", "성남시 수정구", "성남시 중원구", "수원시 권선구", "수원시 영통구", "수원시 장안구"
-                    , "수원시 팔달구", "시흥시", "안산시 단원구", "안산시 상륙구", "안성시", "안양시 동안구", "안양시 만안구"
-                    , "양주시", "양평군", "여주시", "연천구", "오산시", "용인시 기흥구", "용인시 수지구", "용인시 처인구"
-                    , "의왕시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"};
+                    , "수원시 팔달구", "시흥시", "안산시 단원구", "안산시 상록구", "안성시", "안양시 동안구", "안양시 만안구"
+                    , "양주시", "양평군", "여주시", "연천군", "오산시", "용인시 기흥구", "용인시 수지구", "용인시 처인구"
+                    , "의왕시", "의정부시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if(selectedSido.contains("강원")){
@@ -194,7 +181,7 @@ public class MainFragment extends Fragment {
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if(selectedSido.contains("경상북도")){
-                    String elements[]= {"군위군", "경산시", "경주시", "고령군", "구미시", "김천시", "문경시", "봉화군"
+                    String elements[]= {"군위군" ,"경산시", "경주시", "고령군", "구미시", "김천시", "문경시", "봉화군"
                     , "상주시", "성주군", "안동시", "영덕군", "영양군", "영주시", "영천시", "예천군", "울릉군", "울진군"
                     , "의성군", "청도군", "청송군", "칠곡군", "포항시 남구", "포항시 북구"};
                     adapter.addAll(elements);
@@ -205,7 +192,7 @@ public class MainFragment extends Fragment {
                     gugun.setAdapter(adapter);
                 }else if(selectedSido.contains("전라남도")){
                     String elements[]= {"강진군", "고흥군", "곡성군", "광양시", "구례군", "나주시"
-                    , "담양군", "목포시", "무안군", "보성군", "순천시", "신안군", "여수시", "영광군"
+                    , "담양군", "목포시", "무안군", "보성군", "순천시", "신안군", "여수시", "영광군", "영암군"
                     , "완도군", "장성군", "장흥군", "진도군", "해남군", "화순군"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
@@ -224,24 +211,24 @@ public class MainFragment extends Fragment {
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if (selectedSido.contains("부산")) {
-                    String elements[]= {"강서구", "금정구", "남구", "동구", "동래구"
-                    , "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "기장군"
+                    String elements[]= {"강서구", "금정구", "기장군", "남구", "동구", "동래구"
+                    , "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구"
                     , "영도구", "중구", "해운대구"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if (selectedSido.contains("경상남도")) {
                     String elements[]= {"거제시", "거창군", "고성군", "김해시", "남해군", "밀양시"
                     , "사천시", "산청군", "양산시", "의령군", "진주시", "창원시 마산합포", "창원시 마산회"
-                    , "창녕군", "창원시 성산구", "창원시 의창구", "창원시 진해구", "동영시", "하동군"
+                    , "창녕군", "창원시 성산구", "창원시 의창구", "창원시 진해구", "통영시", "하동군"
                     , "함안군", "함양군", "함천군"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if (selectedSido.contains("대구")) {
-                    String elements[]= {"남구", "달서구", "달성군", "동구", "북구", "서구", "수성구"};
+                    String elements[]= {"남구", "달서구", "달성군", "동구", "북구", "서구", "수성구", "중구"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
                 }else if(selectedSido.contains("인천")) {
-                    String elements[]= {"강화군", "계양구", "남구", "남동구", "동구", "부평구", "서구", "연수구", "웅진군"
+                    String elements[]= {"강화군", "계양구", "남구", "남동구", "동구", "부평구", "서구", "연수구", "옹진군"
                     , "중구"};
                     adapter.addAll(elements);
                     gugun.setAdapter(adapter);
@@ -345,7 +332,7 @@ public class MainFragment extends Fragment {
                         adapter.addAll(elements);
                         dong.setAdapter(adapter);
                     }else if(selectedGugun.equals("송파구")){
-                        String elements[]= {"가락동", "가락본동", "거여동", "문정동", "삼천동", "석촌동", "시천동",
+                        String elements[]= {"가락동", "가락본동", "거여동", "문정동", "삼전동", "석촌동", "시천동",
                                 "잠실동", "잠실본동", "풍납동", "장지동", "나머지지역"};
                         adapter.addAll(elements);
                         dong.setAdapter(adapter);
@@ -374,7 +361,7 @@ public class MainFragment extends Fragment {
                     }else if(selectedGugun.equals("종로구")){
                         String elements[]= {"가희동", "견지동", "계동", "공평동", "관수동", "관철동", "동숭동", "숭인동", "이화동"
                                 , "명륜1가", "명륜2가", "명륜3가", "명륜4가", "묘동", "봉익동", "송현동", "수송동", "안국동", "운니동"
-                                , "원남동", "원서동", "인사동", "안의동", "장사동", "재동", "종로1가", "종로2가", "종로3가", "종로4가"
+                                , "원남동", "원서동", "인사동", "인의동", "장사동", "재동", "종로1가", "종로2가", "종로3가", "종로4가"
                                 , "종로5가", "중학동", "종로6가", "창신동", "청진동", "혜화동", "훈정동", "충신동", "효제동", "나머지지역"};
                         adapter.addAll(elements);
                         dong.setAdapter(adapter);
