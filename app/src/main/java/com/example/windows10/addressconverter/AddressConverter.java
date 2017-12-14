@@ -287,10 +287,10 @@ public class AddressConverter implements Runnable{
                         result="3S69-1";
                     }else if(address.emdNm.equals("신월동")){
                         result="3S69-2";
-                    }else if(address.emdNm.equals("신청1동") || address.emdNm.equals("신청2동") || address.emdNm.equals("신청4동")
-                            || address.emdNm.equals("신청6동") || address.emdNm.equals("신청7동") || address.emdNm.equals("신청동")){
+                    }else if(address.emdNm.equals("신정1동") || address.emdNm.equals("신정2동") || address.emdNm.equals("신정4동")
+                            || address.emdNm.equals("신정6동") || address.emdNm.equals("신정7동") || address.emdNm.equals("신정동")){
                         result="3S69-3";
-                    }else if(address.emdNm.equals("신청3동")){
+                    }else if(address.emdNm.equals("신정3동")){
                         result="3S69-5";
                     }
                 }else if(address.sggNm.equals("영등포구")){
